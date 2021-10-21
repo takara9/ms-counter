@@ -1,0 +1,28 @@
+pipeline {
+
+  environment {
+    registry = "harbor.labo.local/tkr/webapl-pd"
+    dockerImage  = ""
+    dockerImage2 = ""    
+    KUBECONFIG = credentials('prod-k8s3-webapl-pd')
+    TAG = "1"
+  }
+
+  agent any
+  stages {
+
+    stage('K8sクラスタへのデプロイ') {
+      steps {
+        script {
+          sh 'kubectl cluster-info --kubeconfig $KUBECONFIG'
+	  sh 'sed s/__BUILDNUMBER__/$TAG/ deploy.yaml > webapl-pd.yaml'
+          sh 'cat -n webapl-pd.yaml'
+          sh 'kubectl apply -f webapl-pd.yaml --kubeconfig $KUBECONFIG'
+        }
+      }
+    }
+
+  }
+}
+
+

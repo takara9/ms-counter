@@ -1,0 +1,37 @@
+##
+## テストアプリ
+##
+---
+## デプロイメント 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapl-pd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapl-pd
+  template:
+    metadata:
+      labels:
+        app: webapl-pd
+    spec:
+      containers:
+      - name: webapl-pd
+        image: harbor.labo.local/tkr/webapl-pd:__BUILDNUMBER__
+        imagePullPolicy: Always
+---
+## サービス
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapl-pd
+spec:
+  selector:
+    app: webapl-pd
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: LoadBalancer
