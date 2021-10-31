@@ -11,6 +11,9 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get update && apt-get install nodejs npm -y
 
 ADD ./myapp/ /myapp
+#ADD ./test.js /test.js
+RUN npm install ioredis
+
 RUN cd myapp && npm install
 ENV NODE_ENV production
 EXPOSE 3000

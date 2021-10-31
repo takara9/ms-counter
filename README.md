@@ -1,9 +1,18 @@
-# ポッドのPDツール
+# カウンターツール
 
-Kubernetesにコンテナをデプロイした時に、ポッドのホスト名やIPアドレスを確認して、意図したとおりに、アクセスが分散されているかを確認したい時に利用できるツール。
+## 使い方
 
-ブラウザでアクセスする方法、および、REST-APIでアクセスする方法の２つのケースを提供する。
+curl http://hostname:3000/set/key  キーをセット
+curl http://hostname:3000/get/key  キーの値を取得
+curl http://hostname:3000/inc/key  キーの値を一つ更新して取得
 
+環境変数にセットして利用する方法
+$ seq=$(curl -s localhost:3000/inc/k1); echo $seq
+
+
+## 起動方法 
+
+docker run -it --rm --name xx -p 3000:3000 -e REDIS_PORT=30379 -e REDIS_HOST=192.168.1.80  maho/ms-counter:1.0 
 
 
 
