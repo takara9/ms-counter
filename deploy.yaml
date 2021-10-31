@@ -1,36 +1,47 @@
 ##
-## テストアプリ
+## テストマイクロサービス
 ##
 ---
 ## デプロイメント 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-counter
+  name: ms-counter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: my-counter
+      app: ms-counter
   template:
     metadata:
       labels:
-        app: my-counter
+        app: ms-counter
     spec:
       containers:
-      - name: my-counter
-        #image: harbor.labo.local/tkr/my-counter:1.0
-        image: maho/my-counter:1.0
+      - name: ms-counter
+        #image: harbor.labo.local/tkr/ms-counter:1.0
+        image: maho/ms-counter:1.0
         imagePullPolicy: Always
+        env:
+          - name: REDIS_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: ms-counter-config
+                key: redis_host
+          - name: REDIS_PORT
+            valueFrom:
+              configMapKeyRef:	    
+                name: ms-counter-config
+                key: redis_port
 ---
 ## サービス
 apiVersion: v1
 kind: Service
 metadata:
-  name: my-counter
+  name: ms-counter
 spec:
   selector:
-    app: my-counter
+    app: ms-counter
   ports:
   - protocol: TCP
     port: 80

@@ -53,20 +53,26 @@ docker push maho/ms-counter:1.0
 ネームスペースを作って、デフォルトを切り替える
 
 ~~~
-kubectl create ns webapl-pd
-kubectl config set-context webapl-pd --namespace=webapl-pd --cluster=kubernetes --user=admin
-kubectl config use-context webapl-pd
+kubectl create ns ms-counter
+kubectl config set-context ms-counter --namespace=ms-counter --cluster=kubernetes --user=admin
+kubectl config use-context ms-counter
 kubectl config get-contexts
 ~~~
 
 確認結果
 
 ~~~
-tkr@hmc:~/k8s1$ kubectl config get-contexts
-CURRENT   NAME        CLUSTER      AUTHINFO   NAMESPACE
-          ceph        kubernetes   admin      ceph-csi
-          default     kubernetes   admin      
-*         webapl-pd   kubernetes   admin      webapl-pd
+tkr@hmc:~/ms-counter$ kubectl create ns ms-counter
+namespace/ms-counter created
+tkr@hmc:~/ms-counter$ kubectl config set-context ms-counter --namespace=ms-counter --cluster=kubernetes --user=admin
+Context "ms-counter" created.
+tkr@hmc:~/ms-counter$ kubectl config use-context ms-counter
+Switched to context "ms-counter".
+tkr@hmc:~/ms-counter$ kubectl config get-contexts
+CURRENT   NAME         CLUSTER      AUTHINFO   NAMESPACE
+          default      kubernetes   admin      
+*         ms-counter   kubernetes   admin      ms-counter
+          redis        kubernetes   admin      redis
 ~~~
 
 このkubeconfigファイルをJenkinsへアップロードする。
