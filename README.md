@@ -23,15 +23,15 @@ docker run -it --rm --name xx -p 3000:3000 -e REDIS_PORT=30379 -e REDIS_HOST=192
 GitHubからクローンしてビルドする。
 
 ~~~
-git clone ssh://git@github.com/takara9/webapl-pd
-cd webapl-pd
-docker build -t maho/pd-tools:0.1 .
-docker run --rm -p 3000:3000 --name pd-tools maho/pd-tools:0.1
-docker push maho/pd-tools:0.1
+git clone ssh://git@github.com/takara9/ms-counter
+cd ms-counter
+docker build -t maho/ms-counter:1.0 .
+docker run -it --rm --name cnt -p 3000:3000 -e REDIS_PORT=30379 -e REDIS_HOST=192.168.1.80  maho/ms-counter:1.0 
+docker push maho/ms-counter:1.0
 ~~~
 
 
-GitLabからCloneして
+
 
 
 
