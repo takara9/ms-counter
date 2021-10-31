@@ -6,30 +6,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapl-pd
+  name: my-counter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webapl-pd
+      app: my-counter
   template:
     metadata:
       labels:
-        app: webapl-pd
+        app: my-counter
     spec:
       containers:
-      - name: webapl-pd
-        image: harbor.labo.local/tkr/webapl-pd:__BUILDNUMBER__
+      - name: my-counter
+        #image: harbor.labo.local/tkr/my-counter:1.0
+        image: maho/my-counter:1.0
         imagePullPolicy: Always
 ---
 ## サービス
 apiVersion: v1
 kind: Service
 metadata:
-  name: webapl-pd
+  name: my-counter
 spec:
   selector:
-    app: webapl-pd
+    app: my-counter
   ports:
   - protocol: TCP
     port: 80
