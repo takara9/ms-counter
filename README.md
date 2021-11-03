@@ -64,21 +64,102 @@ docker push maho/ms-counter:1.0  # Docker Hubへプッシュする
 
 ## CICDパイプラインの構築
 
+### パイプライン用のネームスペースを作成
+
+~~~
+cp $KUBECONFIG admin.kubeconfig-k8s1-mscnt-dev
+export KUBECONFIG=`pwd`/admin.kubeconfig-k8s1-mscnt-dev
+kubectl create ns ms-counter-dev
+kubectl config set-context ms-counter-dev --namespace=ms-counter-dev --cluster=kubernetes --user=admin
+kubectl config use-context ms-counter-dev
+kubectl config get-contexts
+~~~
 
 
-## Jenkinsのビルドパイプラインの構築
+### Jenkinsへkubeconfigを登録
 
-* GitLabのWeb画面から"Create New Project" -> "Import project" に進む
-* 新規プロジェクトtkr/ms-counter として、GitHubよりインポート。Privateプロジェクトにする。
-* GitLabの認証情報(ユーザー名とパスワード）を登録する。
+Jenkinsにログインして以下の手順でKubeconfigファイルを登録する。
+メニューに沿って進む、ダッシュボード -> Jenkinsの管理 -> Manage Credentials -> Domain(global) -> 認証情報の追加
+追加画面で以下をセットして、保存をクリックする。
+* 種類: Secret file
+* スコープ: グローバル
+* File: 先にコピーしたadmin.kubeconfig-k8s1-mscnt-devを選択
+* ID: cnt-dev-kubeconf
+* 説明: テスト環境クラスタk8s1の名前空間ms-counter-devを指定
 
-* Kubernetesにテスト用名前空間を作成しておく。
-* 上記の名前空間をデフォルトにしたkubeconfigファイルを準備して、Jenkinsへ登録する。
-* 
+
+### GitHubからGitLabにリポジトリをインポート
+
+GitHubでエクスポートするためにトークンを生成
+
+* GitHub https://github.com/takara9/ms-counter で Personal Access Token を生成する。
+* 右上のアカウントのアイコン-> Settings -> Develper settings -> Personal access tokens -> Generate new token
+* トークンのスコープをチェック
+* Generate access token をクリック
+* 表示されたトークンをコピペでメモする。
+
+
+GitLabへのインポート
+
+* GitLab https://gitlab.labo.local/にログインする。
+* New project -> Import project -> Import project from で GitHub -> Peronal Access Token
+* Personal Access Tokenの入力フィールドに先のトークンをペースト
+* Authenticate をクリック
+* リポジトリのリストからインポートするものを選択 takara9/ms-counter をインポートする
+* completeになるまで待つ
 
 
 
-## Kubernetesの名前空間準備とkubeconfigのファイル作成
+### PublicからPrivateへ変更
+
+* GitLab tkr/ms-counterのリポジトリを開く。https://gitlab.labo.local/tkr/ms-counter
+* スパナのアイコン（View project in admin area) -> Edit -> Visibility, project features, permissions -> Expand
+* Project visibility を PublicからPrivateへ変更
+* Save changesをクリック
+
+
+### Jenkinsのビルドパイプラインの構築
+
+* Jenkinsにログインして、新規ジョブ作成をクリックする。
+* ジョブ名入力に「カウンターマイクロサービス」をインプット、パイプラインを選択する。
+* OKをクリックして先へ進む
+* 最初はビルドトリガーを設定しない。後回しにする。先にマニュアルで動作できるようにする。
+* パイパラインの定義
+  * 選択 定義: Pipeline script from SCM を選択
+  * 選択 SCM: Git
+  * リポジトリURL: https://gitlab.labo.local/tkr/ms-counter
+  * 認証情報: 先に登録したGitLabに認証情報を選択
+  * ブランチ指定子: */main に変更
+  * Script Path: Jenkinsfile を設定
+* 保存をクリック
+* Jenkinsfileを編集する
+
+
+### リモートリポジトリにGitLabを加える
+
+maho:ms-counter maho$ git remote -v
+origin	ssh://git@github.com/takara9/ms-counter.git (fetch)
+origin	ssh://git@github.com/takara9/ms-counter.git (push)
+
+
+maho:ms-counter maho$ git remote add gitlab https://gitlab.labo.local/tkr/ms-counter
+
+
+maho:ms-counter maho$ git remote -v
+gitlab	https://gitlab.labo.local/tkr/ms-counter (fetch)
+gitlab	https://gitlab.labo.local/tkr/ms-counter (push)
+origin	ssh://git@github.com/takara9/ms-counter.git (fetch)
+origin	ssh://git@github.com/takara9/ms-counter.git (push)
+
+
+
+### Jenkinsfileの編集
+
+
+
+
+
+### Kubernetesの名前空間準備とkubeconfigのファイル作成
 
 ネームスペースを作って、デフォルトを切り替える
 
