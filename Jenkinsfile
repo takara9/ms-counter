@@ -1,13 +1,13 @@
 def get_tag() {
   sh (
-     script: "curl -s http://ms-counter.ms-counter.k8s1.labo.local/get/webapl-pd",
+     script: "curl -s http://ms-counter.ms-counter.k8s1.labo.local/get/ms-counter",
      returnStdout: true
   )
 } 
 
 def inc_tag() {
   sh (
-     script: "curl -s http://ms-counter.ms-counter.k8s1.labo.local/inc/webapl-pd",
+     script: "curl -s http://ms-counter.ms-counter.k8s1.labo.local/inc/ms-counter",
      returnStdout: true
   )
 } 
@@ -16,11 +16,11 @@ def inc_tag() {
 pipeline {
 
   environment {
-    registry = "harbor.labo.local/tkr/webapl-pd"
+    registry = "harbor.labo.local/tkr/ms-counter"
     dockerImage  = ""
     dockerImage2 = ""    
-    KUBECONFIG = credentials('test-k8s1-webapl-pd')
-    TAG =  inc_tag()     
+    KUBECONFIG = credentials('cnt-dev-kubeconf')
+    TAG =  inc_tag()
   }
 
   agent any
@@ -72,9 +72,9 @@ pipeline {
       steps {
         script {
           sh 'kubectl cluster-info --kubeconfig $KUBECONFIG'
-	  sh 'sed s/__BUILDNUMBER__/$TAG/ deploy.yaml > webapl-pd.yaml'
-          sh 'cat -n webapl-pd.yaml'
-          sh 'kubectl apply -f webapl-pd.yaml --kubeconfig $KUBECONFIG'
+	  sh 'sed s/__BUILDNUMBER__/$TAG/ deploy.yaml > ms-counter.yaml'
+          sh 'cat -n ms-counter.yaml'
+          sh 'kubectl apply -f ms-counter.yaml --kubeconfig $KUBECONFIG'
         }
       }
     }
