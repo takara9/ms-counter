@@ -72,12 +72,18 @@ pipeline {
       steps {
         script {
           sh 'kubectl cluster-info --kubeconfig $KUBECONFIG'
+	  sh 'kubectl apply -f configmap.yaml --kubeconfig $KUBECONFIG'
 	  sh 'sed s/__BUILDNUMBER__/$TAG/ deploy.yaml > ms-counter.yaml'
           sh 'cat -n ms-counter.yaml'
           sh 'kubectl apply -f ms-counter.yaml --kubeconfig $KUBECONFIG'
         }
       }
     }
+
+
+
+
+
 
   }
 }
