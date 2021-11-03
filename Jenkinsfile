@@ -1,27 +1,43 @@
+def get_tag() {
+  sh (
+     script: "curl -s http://ms-counter.ms-counter.k8s1.labo.local/get/webapl-pd",
+     returnStdout: true
+  )
+} 
+
+def inc_tag() {
+  sh (
+     script: "curl -s http://ms-counter.ms-counter.k8s1.labo.local/inc/webapl-pd",
+     returnStdout: true
+  )
+} 
+
+
 pipeline {
 
   environment {
     registry = "harbor.labo.local/tkr/webapl-pd"
     dockerImage  = ""
+    dockerImage2 = ""    
     KUBECONFIG = credentials('test-k8s1-webapl-pd')
-    TAG = "1"
+    TAG =  inc_tag()     
   }
 
   agent any
   stages {
-
     stage('GitLabからソースコード取得') {
       steps {
         echo 'Notify GitLab'
         updateGitlabCommitStatus name: 'build', state: 'pending'
         updateGitlabCommitStatus name: 'build', state: 'success'
+	echo "${TAG}"
       }
     }
 
     stage('コンテナイメージのビルド') {
       steps {
         script {
-          dockerImage  = docker.build registry + ":$TAG"
+          dockerImage  = docker.build registry + ":${TAG}"
         }
       }
     }
@@ -34,7 +50,6 @@ pipeline {
       }
     }
 
-
     stage('コンテナの単体テスト') {
       steps {
         script {
@@ -42,7 +57,6 @@ pipeline {
         }
       }
     }
-
 
     stage('コンテナレジストリへプッシュ') {
       steps {
@@ -67,5 +81,7 @@ pipeline {
 
   }
 }
+
+
 
 

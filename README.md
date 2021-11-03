@@ -137,23 +137,56 @@ GitLabへのインポート
 
 ### リモートリポジトリにGitLabを加える
 
+現在のリモートリポジトリを確認する。GitHubからクローンしただけなので、Githubだけとなっている。
+
+~~~
 maho:ms-counter maho$ git remote -v
 origin	ssh://git@github.com/takara9/ms-counter.git (fetch)
 origin	ssh://git@github.com/takara9/ms-counter.git (push)
+~~~
 
+ローカルのGitLabを追加する。
 
+~~~
 maho:ms-counter maho$ git remote add gitlab https://gitlab.labo.local/tkr/ms-counter
+~~~
 
+リモートリポジトリのリストを表示する。追加されている。
 
+~~~
 maho:ms-counter maho$ git remote -v
 gitlab	https://gitlab.labo.local/tkr/ms-counter (fetch)
 gitlab	https://gitlab.labo.local/tkr/ms-counter (push)
 origin	ssh://git@github.com/takara9/ms-counter.git (fetch)
 origin	ssh://git@github.com/takara9/ms-counter.git (push)
+~~~
+
+変更を加えたファイルについて、それぞれのリポジトリへpushする。
+
+~~~
+maho:ms-counter maho$ git add README.md 
+maho:ms-counter maho$ git commit -m "add how to add remote repo"
+~~~
+
+GitHubを更新
+
+~~~
+maho:ms-counter maho$ git push origin
+~~~
+
+GitLabのリポジトリを更新
+
+~~~
+maho:ms-counter maho$ git push gitlab
+~~~
+
+これで、両方のリポジトリを操作することができるようになった。
 
 
 
 ### Jenkinsfileの編集
+
+Jenkinsfileを編集する。
 
 
 
