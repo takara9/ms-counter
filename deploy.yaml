@@ -19,8 +19,8 @@ spec:
     spec:
       containers:
       - name: ms-counter
-        #image: harbor.labo.local/tkr/ms-counter:1.0
-        image: maho/ms-counter:1.0
+        image: harbor.labo.local/tkr/ms-counter:__BUILDNUMBER__
+        #image: maho/ms-counter:1.0
         imagePullPolicy: Always
         env:
           - name: REDIS_HOST

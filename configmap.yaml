@@ -1,0 +1,13 @@
+##
+## テストマイクロサービス用コンフィグマップ
+##   Redisサーバーの接続先指定
+##   本番とテスト環境で、同じRedisをアクセスしないように
+##   名前空間を変更するなどの注意を払うこと。
+##
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-counter-config
+data:
+  redis_host: "redis.redis"
+  redis_port: "6379"
