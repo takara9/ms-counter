@@ -192,39 +192,8 @@ Jenkinsfileを編集する。
 
 
 
-### Kubernetesの名前空間準備とkubeconfigのファイル作成
 
-ネームスペースを作って、デフォルトを切り替える
 
-~~~
-kubectl create ns ms-counter
-kubectl config set-context ms-counter --namespace=ms-counter --cluster=kubernetes --user=admin
-kubectl config use-context ms-counter
-kubectl config get-contexts
-~~~
-
-確認結果
-
-~~~
-tkr@hmc:~/ms-counter$ kubectl create ns ms-counter
-namespace/ms-counter created
-tkr@hmc:~/ms-counter$ kubectl config set-context ms-counter --namespace=ms-counter --cluster=kubernetes --user=admin
-Context "ms-counter" created.
-tkr@hmc:~/ms-counter$ kubectl config use-context ms-counter
-Switched to context "ms-counter".
-tkr@hmc:~/ms-counter$ kubectl config get-contexts
-CURRENT   NAME         CLUSTER      AUTHINFO   NAMESPACE
-          default      kubernetes   admin      
-*         ms-counter   kubernetes   admin      ms-counter
-          redis        kubernetes   admin      redis
-~~~
-
-このkubeconfigファイルをJenkinsへアップロードする。
-
-~~~
-tkr@hmc:~/k8s1$ echo $KUBECONFIG
-/home/tkr/k8s1/admin.kubeconfig-k8s1
-~~~
 
 
 
